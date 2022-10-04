@@ -4,6 +4,7 @@
 :root {
   --background-color: #222;
   --background-color-win: #60b347;
+  --background-color-lost: #c22222;
   --font-color: #eee;
   --height: 100vh;
 }
