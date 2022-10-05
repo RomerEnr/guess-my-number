@@ -1,11 +1,15 @@
 // Dom references
-const displayMessage = document.querySelector(".message");
-const guessButton = document.querySelector(".check");
-const gameScore = document.querySelector(".score");
-const againButton = document.querySelector(".again");
-const inputValue = document.querySelector(".guess");
-const bigNumber = document.querySelector(".number");
-const rootStyles = document.documentElement.style;
+const dom = {
+  displayMessage: document.querySelector(".message"),
+  guessButton: document.querySelector(".check"),
+  gameScore: document.querySelector(".score"),
+  resetButton: document.querySelector(".again"),
+  inputValue: document.querySelector(".guess"),
+  bigNumber: document.querySelector(".number"),
+  highScore: document.querySelector(".high-score"),
+  rootStyles: document.documentElement.style
+};
+
 // Useful values
 const generateRandomValue = () => {
   return Math.floor(Math.random() * 20) + 1;
@@ -13,43 +17,54 @@ const generateRandomValue = () => {
 
 let randomValue = generateRandomValue();
 let score = 20;
-gameScore.textContent = score;
+let highScore = 0;
+dom.gameScore.textContent = score;
 
 const handleGuessButton = () => {
-  const boxValue = Number(document.querySelector(".guess").value);
-
-  if ((boxValue < 0 || boxValue > 20)) {
-    displayMessage.textContent = "🚫 Wrong value";
+  const value = document.querySelector(".guess").value;
+  const attemptNumber = Number(value);
+  if (attemptNumber === 0) {
+    return;
+  };
+  if ((attemptNumber < 0 || attemptNumber > 20)) {
+    dom.displayMessage.textContent = "🚫 Wrong value";
     return;
   } else if (score === 0) {
-    displayMessage.textContent = "You actually lost";
-    rootStyles.setProperty("--background-color", "#c22222");
-  } else if (boxValue === randomValue) {
-    displayMessage.textContent = "🎉 Correct value";
-    rootStyles.setProperty("--background-color", "#60b347");
-  } else if (boxValue > randomValue) {
-    displayMessage.textContent = "Too high...";
+    dom.displayMessage.textContent = "You actually lost";
+    dom.rootStyles.setProperty("--background-color", "#c22222");
+  } else if (attemptNumber === randomValue) {
+    dom.displayMessage.textContent = "🎉 Correct value";
+    dom.rootStyles.setProperty("--background-color", "#60b347");
+    addHighScore(score);
+  } else if (attemptNumber > randomValue) {
+    dom.displayMessage.textContent = "Too high...";
     score--;
-    gameScore.textContent = score;
-    gameScore.textContent = score;
-  } else if (boxValue < randomValue) {
-    displayMessage.textContent = "Too low...";
-    score -= 1;
-    gameScore.textContent = score;
+    dom.gameScore.textContent = score;
+  } else {
+    dom.displayMessage.textContent = "Too low...";
+    score--;
+    dom.gameScore.textContent = score;
   }
-  document.querySelector(".number").innerText = boxValue;
+  document.querySelector(".number").innerText = attemptNumber;
 };
 
-const handleAgainButton = () => {
+const addHighScore = (newScore = 0) => {
+  if (highScore < newScore) {
+    highScore = newScore;
+    dom.highScore.textContent = newScore;
+  }
+};
+
+const handleResetButton = () => {
   randomValue = generateRandomValue();
   score = 20;
-  gameScore.textContent = score;
-  inputValue.value = "";
-  displayMessage.textContent = "Start guessing...";
-  bigNumber.textContent = "?";
-  rootStyles.setProperty("--background-color", "#222  ");
+  dom.gameScore.textContent = score;
+  dom.inputValue.value = "";
+  dom.displayMessage.textContent = "Start guessing...";
+  dom.bigNumber.textContent = "?";
+  dom.rootStyles.setProperty("--background-color", "#222  ");
 };
 
 // Events
-guessButton.addEventListener("click", handleGuessButton);
-againButton.addEventListener("click", handleAgainButton);
+dom.guessButton.addEventListener("click", handleGuessButton);
+dom.resetButton.addEventListener("click", handleResetButton);
